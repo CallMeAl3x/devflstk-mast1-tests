@@ -115,4 +115,56 @@ public class PasswordValidatorTest {
 
         assertFalse(validator.isValid(password));
     }
+
+    // ========== Bonus : getStrengthScore ==========
+
+    // ---------- Tests classiques ----------
+
+    @Test
+    void getStrengthScore_shouldReturn5_forAStrongPassword() {
+        // Arrange
+        PasswordValidator validator = new PasswordValidator();
+
+        // Act
+        int score = validator.getStrengthScore("Password1!");
+
+        // Assert
+        assertEquals(5, score);
+    }
+
+    @Test
+    void getStrengthScore_shouldReturn3_forAShortPasswordMissingUppercase() {
+        PasswordValidator validator = new PasswordValidator();
+
+        int score = validator.getStrengthScore("short1!");
+
+        assertEquals(3, score);
+    }
+
+    @Test
+    void getStrengthScore_shouldReturn0_whenPasswordIsNull() {
+        PasswordValidator validator = new PasswordValidator();
+
+        int score = validator.getStrengthScore(null);
+
+        assertEquals(0, score);
+    }
+
+    // ---------- Tests paramétrés : @CsvSource ----------
+
+    @ParameterizedTest(name = "[{index}] \"{0}\" => score = {1}")
+    @CsvSource({
+            "Password1!, 5",
+            "Admin2024@, 5",
+            "short1!,    3",
+            "PASSWORD1!, 4",
+            "password1!, 4",
+            "Password!,  4",
+            "Password1,  4"
+    })
+    void getStrengthScore_shouldMatchExpectedScore(String password, int expectedScore) {
+        PasswordValidator validator = new PasswordValidator();
+
+        assertEquals(expectedScore, validator.getStrengthScore(password));
+    }
 }
