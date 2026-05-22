@@ -1,5 +1,8 @@
 ### Solutions ###
 03_exercices/*_solution.md
 
+### Maven ###
+target/
+
 ### Mac OS ###
 .DS_Store
