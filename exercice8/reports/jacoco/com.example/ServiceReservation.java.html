@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="fr"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ServiceReservation.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">exercice8</a> &gt; <a href="index.source.html" class="el_package">com.example</a> &gt; <span class="el_source">ServiceReservation.java</span></div><h1>ServiceReservation.java</h1><pre class="source lang-java linenums">package com.example;
+
+import java.util.List;
+
+public class ServiceReservation {
+
+    private final RepertoireSalle repertoire;
+    private final RegistreReservation registre;
+    private final ServiceNotification notification;
+
+    public ServiceReservation(RepertoireSalle repertoire, RegistreReservation registre,
+<span class="fc" id="L12">                              ServiceNotification notification) {</span>
+<span class="fc" id="L13">        this.repertoire = repertoire;</span>
+<span class="fc" id="L14">        this.registre = registre;</span>
+<span class="fc" id="L15">        this.notification = notification;</span>
+<span class="fc" id="L16">    }</span>
+
+    public ConfirmationReservation reserver(Reservation demande) {
+<span class="fc" id="L19">        Salle salle = repertoire.trouverParCode(demande.codeSalle());</span>
+<span class="fc bfc" id="L20" title="All 2 branches covered.">        if (salle == null) {</span>
+<span class="fc" id="L21">            throw new SalleInconnueException(demande.codeSalle());</span>
+        }
+<span class="fc bfc" id="L23" title="All 2 branches covered.">        if (!demande.dateFin().isAfter(demande.dateDebut())) {</span>
+<span class="fc" id="L24">            throw new PeriodeInvalideException();</span>
+        }
+<span class="fc bfc" id="L26" title="All 2 branches covered.">        if (demande.nombreParticipants() &gt; salle.capaciteMax()) {</span>
+<span class="fc" id="L27">            throw new CapaciteInsuffisanteException(</span>
+<span class="fc" id="L28">                    salle.code(), demande.nombreParticipants(), salle.capaciteMax());</span>
+        }
+
+<span class="fc" id="L31">        List&lt;Reservation&gt; existantes = registre.reservationsPour(demande.codeSalle());</span>
+<span class="fc" id="L32">        boolean conflit = existantes.stream().anyMatch(demande::chevauche);</span>
+<span class="fc bfc" id="L33" title="All 2 branches covered.">        if (conflit) {</span>
+<span class="fc" id="L34">            throw new ConflitReservationException(demande.codeSalle());</span>
+        }
+
+<span class="fc" id="L37">        notification.envoyerConfirmation(demande);</span>
+<span class="fc" id="L38">        return new ConfirmationReservation(</span>
+<span class="fc" id="L39">                salle.code(),</span>
+<span class="fc" id="L40">                demande.emailUtilisateur(),</span>
+<span class="fc" id="L41">                &quot;Réservation confirmée pour la salle &quot; + salle.nom());</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span></div></body></html>
