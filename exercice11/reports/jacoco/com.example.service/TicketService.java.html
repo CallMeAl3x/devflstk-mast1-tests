@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="fr"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>TicketService.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">exercice11</a> &gt; <a href="index.source.html" class="el_package">com.example.service</a> &gt; <span class="el_source">TicketService.java</span></div><h1>TicketService.java</h1><pre class="source lang-java linenums">package com.example.service;
+
+import com.example.exception.InvalidStatusTransitionException;
+import com.example.exception.TicketNotFoundException;
+import com.example.model.Priority;
+import com.example.model.Ticket;
+import com.example.model.TicketStatus;
+import com.example.repository.TicketRepository;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+
+/** Logique métier de gestion des tickets. */
+@Service
+public class TicketService {
+
+    private final TicketRepository repository;
+
+<span class="fc" id="L19">    public TicketService(TicketRepository repository) {</span>
+<span class="fc" id="L20">        this.repository = repository;</span>
+<span class="fc" id="L21">    }</span>
+
+    /** Crée un ticket. Le statut initial est toujours OPEN. */
+    public Ticket create(String title, Priority priority) {
+<span class="fc" id="L25">        Ticket ticket = new Ticket(null, title, priority, TicketStatus.OPEN);</span>
+<span class="fc" id="L26">        return repository.save(ticket);</span>
+    }
+
+    /** Récupère un ticket ou lève {@link TicketNotFoundException}. */
+    public Ticket getById(Long id) {
+<span class="fc" id="L31">        return repository.findById(id)</span>
+<span class="fc" id="L32">                .orElseThrow(() -&gt; new TicketNotFoundException(id));</span>
+    }
+
+    public List&lt;Ticket&gt; findAll() {
+<span class="nc" id="L36">        return repository.findAll();</span>
+    }
+
+    /**
+     * Change le statut d'un ticket en respectant les transitions autorisées.
+     *
+     * @throws TicketNotFoundException          si le ticket n'existe pas
+     * @throws InvalidStatusTransitionException si la transition est interdite
+     */
+    public Ticket changeStatus(Long id, TicketStatus cible) {
+<span class="fc" id="L46">        Ticket ticket = getById(id);</span>
+<span class="fc bfc" id="L47" title="All 2 branches covered.">        if (!ticket.getStatus().peutPasserA(cible)) {</span>
+<span class="fc" id="L48">            throw new InvalidStatusTransitionException(ticket.getStatus(), cible);</span>
+        }
+<span class="fc" id="L50">        ticket.setStatus(cible);</span>
+<span class="fc" id="L51">        return repository.save(ticket);</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

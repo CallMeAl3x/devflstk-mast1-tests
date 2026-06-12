@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="fr"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>TicketController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">exercice11</a> &gt; <a href="index.source.html" class="el_package">com.example.controller</a> &gt; <span class="el_source">TicketController.java</span></div><h1>TicketController.java</h1><pre class="source lang-java linenums">package com.example.controller;
+
+import com.example.dto.ChangeStatusRequest;
+import com.example.dto.CreateTicketRequest;
+import com.example.dto.TicketResponse;
+import com.example.model.Ticket;
+import com.example.service.TicketService;
+import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
+
+/** Endpoints REST de gestion des tickets. */
+@RestController
+@RequestMapping(&quot;/api/tickets&quot;)
+public class TicketController {
+
+    private final TicketService service;
+
+<span class="fc" id="L29">    public TicketController(TicketService service) {</span>
+<span class="fc" id="L30">        this.service = service;</span>
+<span class="fc" id="L31">    }</span>
+
+    /** Création d'un ticket → 201 Created. */
+    @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
+    public TicketResponse create(@Valid @RequestBody CreateTicketRequest request) {
+<span class="fc" id="L37">        Ticket ticket = service.create(request.title(), request.priority());</span>
+<span class="fc" id="L38">        return TicketResponse.from(ticket);</span>
+    }
+
+    /** Consultation d'un ticket → 200 OK (404 si absent). */
+    @GetMapping(&quot;/{id}&quot;)
+    public TicketResponse getOne(@PathVariable Long id) {
+<span class="fc" id="L44">        return TicketResponse.from(service.getById(id));</span>
+    }
+
+    /** Liste des tickets → 200 OK. */
+    @GetMapping
+    public List&lt;TicketResponse&gt; list() {
+<span class="nc" id="L50">        return service.findAll().stream().map(TicketResponse::from).toList();</span>
+    }
+
+    /** Modification du statut → 200 OK (404 si absent, 409 si transition interdite). */
+    @PatchMapping(&quot;/{id}/status&quot;)
+    public TicketResponse changeStatus(@PathVariable Long id,
+                                       @Valid @RequestBody ChangeStatusRequest request) {
+<span class="fc" id="L57">        return TicketResponse.from(service.changeStatus(id, request.status()));</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>
