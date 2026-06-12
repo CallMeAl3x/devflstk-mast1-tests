@@ -1,0 +1,52 @@
+package com.example.model;
+
+/** Ticket de support. L'identifiant est généré automatiquement par le repository. */
+public class Ticket {
+
+    private Long id;
+    private String title;
+    private Priority priority;
+    private TicketStatus status;
+
+    public Ticket() {
+    }
+
+    public Ticket(Long id, String title, Priority priority, TicketStatus status) {
+        this.id = id;
+        this.title = title;
+        this.priority = priority;
+        this.status = status;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public Priority getPriority() {
+        return priority;
+    }
+
+    public void setPriority(Priority priority) {
+        this.priority = priority;
+    }
+
+    public TicketStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(TicketStatus status) {
+        this.status = status;
+    }
+}
