@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="fr"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ServiceCommande.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">exercice10</a> &gt; <a href="index.source.html" class="el_package">com.example</a> &gt; <span class="el_source">ServiceCommande.java</span></div><h1>ServiceCommande.java</h1><pre class="source lang-java linenums">package com.example;
+
+public class ServiceCommande {
+
+    private final CommandeRepository commandes;
+
+<span class="fc" id="L7">    public ServiceCommande(CommandeRepository commandes) {</span>
+<span class="fc" id="L8">        this.commandes = commandes;</span>
+<span class="fc" id="L9">    }</span>
+
+    /** US5 — ajout d'un produit à une commande. */
+    public String ajouterProduit(String commandeId, Produit produit) {
+<span class="fc" id="L13">        Commande commande = commandeExistante(commandeId);</span>
+<span class="fc" id="L14">        commande.ajouter(produit);</span>
+<span class="fc" id="L15">        commandes.sauvegarder(commande);</span>
+<span class="fc" id="L16">        return &quot;Produit &quot; + produit.nom() + &quot; ajouté à la commande &quot; + commandeId;</span>
+    }
+
+    /** US6 — suppression / diminution d'un produit d'une commande. */
+    public void retirerProduit(String commandeId, String produitId) {
+<span class="fc" id="L21">        Commande commande = commandeExistante(commandeId);</span>
+<span class="fc" id="L22">        commande.retirer(produitId);</span>
+<span class="fc" id="L23">        commandes.sauvegarder(commande);</span>
+<span class="fc" id="L24">    }</span>
+
+    /** US7 — validation d'une commande. */
+    public String valider(String commandeId) {
+<span class="fc" id="L28">        Commande commande = commandeExistante(commandeId);</span>
+<span class="fc" id="L29">        return &quot;Commande &quot; + commande.getId() + &quot; validée&quot;;</span>
+    }
+
+    private Commande commandeExistante(String commandeId) {
+<span class="fc" id="L33">        Commande commande = commandes.trouver(commandeId);</span>
+<span class="fc bfc" id="L34" title="All 2 branches covered.">        if (commande == null) {</span>
+<span class="fc" id="L35">            throw new CommandeIntrouvableException(commandeId);</span>
+        }
+<span class="fc" id="L37">        return commande;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span></div></body></html>
